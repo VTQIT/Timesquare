@@ -1,90 +1,183 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Timesquare Mobile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Timesquare · 中国热点 · mobile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --ink: #0a0a0f; --paper: #f5f0e8; --cream: #faf7f2; --accent: #d4001a;
+      --gold: #c8922a; --muted: #8a7f72; --border: #ddd5c5; --blue: #1a3a6b;
+      --sky: #e8f0fb; --tag-bg: #f0ece4; --live: #e63946; --green: #2d6a4f; --zh-red: #c8102e;
+    }
+    body { font-family: 'Source Serif 4', Georgia, serif; background: var(--cream); color: var(--ink); min-height: 100vh; line-height: 1.5; }
 
-<style>
-body{font-family:Arial;background:#faf7f2;margin:0}
-.header{position:fixed;top:0;width:100%;background:#111;color:white;padding:15px;font-weight:bold}
-.container{margin-top:60px;padding:15px;max-width:600px;margin-left:auto;margin-right:auto}
-.card{background:white;border-radius:15px;margin-bottom:15px;overflow:hidden;border:1px solid #ddd}
-.card img{width:100%;height:200px;object-fit:cover}
-.title{font-size:18px;font-weight:bold;padding:10px}
-.excerpt{padding:0 10px 10px;color:#444}
-.footer{padding:10px;border-top:1px solid #eee;display:flex;justify-content:space-between}
-button{border:none;background:none;font-size:16px}
-.liked{color:red}
-.fab{position:fixed;bottom:20px;right:20px;background:#d4001a;color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}
-</style>
+    .mobile-header { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--ink); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 2px solid var(--zh-red); z-index:2000; }
+    .logo-mobile { display: flex; align-items: center; gap: 6px; }
+    .logo-icon { width: 34px; height: 34px; background: var(--zh-red); border-radius: 6px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display', serif; font-weight:900; font-size:22px; color:white; transform:scaleX(-1); }
+    .logo-text { font-family:'Playfair Display', serif; font-size:18px; font-weight:900; color:white; letter-spacing:-0.3px; } .logo-text span { color: var(--zh-red); }
+    .header-actions { display:flex; align-items:center; gap:8px; }
+    .btn-translate-mobile { background: var(--gold); border:none; color:white; padding:5px 10px; border-radius:20px; font-size:11px; font-weight:600; font-family:'Source Serif 4', serif; white-space:nowrap; }
+    .user-avatar-mobile { width:34px; height:34px; background: linear-gradient(135deg, var(--gold), var(--zh-red)); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:14px; }
+
+    .mobile-container { max-width:600px; margin:56px auto 0; padding:12px 12px 24px; }
+    .search-row { display:flex; gap:8px; margin-bottom:16px; }
+    .search-input-mobile { flex:1; background:white; border:1px solid var(--border); border-radius:30px; padding:10px 16px; font-size:14px; font-family:'Source Serif 4', serif; outline:none; }
+    .search-input-mobile:focus { border-color: var(--zh-red); }
+    .cms-icon-button { background: var(--blue); border:none; border-radius:30px; padding:0 16px; color:white; font-weight:600; font-size:12px; font-family:'Source Serif 4', serif; white-space:nowrap; }
+
+    .category-scroll { display:flex; gap:8px; overflow-x:auto; padding:4px 0 16px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+    .category-scroll::-webkit-scrollbar { display:none; }
+    .chip-mobile { background: var(--tag-bg); border:1px solid var(--border); border-radius:30px; padding:7px 16px; font-size:13px; white-space:nowrap; color: var(--muted); font-family:'Source Serif 4', serif; }
+    .chip-mobile.active { background: var(--zh-red); color:white; border-color: var(--zh-red); }
+
+    .ticker-compact { background: var(--zh-red); color:white; border-radius:40px; display:flex; align-items:center; margin:8px 0 16px; font-size:12px; }
+    .ticker-label { background: var(--ink); border-radius:40px; padding:6px 16px; font-family:'JetBrains Mono', monospace; font-weight:600; font-size:9px; letter-spacing:1px; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .live-dot { width:6px; height:6px; background: var(--live); border-radius:50%; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity:0; } }
+    .ticker-scroll-mobile { overflow:hidden; padding:0 8px 0 4px; white-space:nowrap; text-overflow:ellipsis; flex:1; }
+
+    .new-posts-sticky { position:sticky; top:68px; z-index:100; margin-bottom:12px; text-align:center; }
+    .npb-mobile { background: var(--ink); color:white; border:none; padding:8px 20px; border-radius:40px; font-size:13px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.3); display:inline-flex; align-items:center; gap:6px; }
+
+    .post-card-mobile { background:white; border-radius:16px; margin-bottom:16px; border:1px solid var(--border); overflow:hidden; }
+    .post-header-mobile { display:flex; align-items:center; gap:8px; padding:12px 12px 6px; }
+    .agent-avatar-mobile { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; border:2px solid var(--border); flex-shrink:0; background:#f0e8dd; }
+    .agent-info-mobile { flex:1; }
+    .agent-name-mobile { font-weight:700; font-size:13px; display:flex; align-items:center; gap:4px; }
+    .post-meta-mobile { font-size:10px; color: var(--muted); display:flex; align-items:center; gap:6px; margin-top:1px; }
+    .post-body-mobile { padding:10px 12px 8px; }
+    .post-title-mobile { font-family:'Playfair Display', serif; font-size:17px; font-weight:700; line-height:1.3; margin-bottom:6px; }
+    .post-excerpt-mobile { font-size:13px; line-height:1.6; color:#333; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .post-source-mobile { display:flex; align-items:center; gap:4px; margin:8px 0 4px; font-size:10px; color: var(--muted); font-family:'JetBrains Mono', monospace; }
+
+    .post-footer-mobile { display:flex; align-items:center; justify-content:space-between; padding:8px 12px 12px; border-top:1px solid var(--border); }
+    .like-btn-mobile { display:flex; align-items:center; gap:5px; background:none; border:none; padding:6px 10px; border-radius:30px; font-size:13px; color: var(--muted); }
+    .like-btn-mobile.liked { color: var(--zh-red); }
+    .read-more-mobile { background:none; border:1px solid var(--border); padding:6px 16px; border-radius:30px; font-size:12px; color: var(--blue); }
+
+    .footer-note { text-align:center; color: var(--muted); font-size:10px; padding:24px 0 8px; }
+
+    .loading-spinner { text-align:center; padding:20px; }
+    .spinner { border:3px solid var(--border); border-top:3px solid var(--zh-red); border-radius:50%; width:30px; height:30px; animation:spin 1s linear infinite; margin:0 auto 10px; }
+    @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
+  </style>
 </head>
-
 <body>
 
-<div class="header">Timesquare</div>
-
-<div class="container">
-<input id="search" placeholder="Search news..." style="width:100%;padding:10px;border-radius:20px;border:1px solid #ccc;margin-bottom:15px">
-<div id="feed"></div>
+<div class="mobile-header">
+  <div class="logo-mobile">
+    <div class="logo-icon">时</div>
+    <span class="logo-text">Time<span>square</span></span>
+  </div>
+  <div class="header-actions">
+    <button class="btn-translate-mobile" id="translateToggleMobile">🌐 中</button>
+    <div class="user-avatar-mobile">热</div>
+  </div>
 </div>
 
-<div class="fab" onclick="loadNews()">↻</div>
+<div class="mobile-container" id="mobileContainer">
+  <div class="search-row">
+    <input type="text" class="search-input-mobile" placeholder="搜索热点新闻..." id="mobileSearch">
+  </div>
+  <div class="ticker-compact" id="tickerHotNews">
+    <span class="ticker-label"><span class="live-dot"></span> 热点</span>
+    <div class="ticker-scroll-mobile" id="tickerContent">🔥 Loading...</div>
+  </div>
+
+  <div class="new-posts-sticky" id="mobileNewPosts" style="display:none;">
+    <button class="npb-mobile" onclick="loadHotNews()">⬆ 刷新热点</button>
+  </div>
+
+  <div id="mobileFeed">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <div>加载中...</div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin:16px 0 20px;">
+    <button onclick="loadHotNews()" style="background:white; border:1px solid var(--border); padding:12px 30px; border-radius:40px; font-size:15px;">加载更多 ↓</button>
+  </div>
+
+  <div class="footer-note">Timesquare · 真实 · 团结 · 热点</div>
+</div>
 
 <script>
-let POSTS=[];
-let likes={};
+let POSTS = [];
+let likesMobile = {};
+const API_URL = "/api/news";
 
-async function loadNews(){
-try{
-const res=await fetch("/api/news");
-const data=await res.json();
-
-POSTS=data.articles.slice(0,15).map((a,i)=>({
-id:i,
-title:a.title,
-excerpt:a.description || "Latest news update",
-image:a.urlToImage || "https://picsum.photos/400/250?"+i,
-likes:Math.floor(Math.random()*5000)+500
-}));
-
-render();
-
-}catch{
-alert("API failed");
-}
-}
-
-function render(list=POSTS){
-const feed=document.getElementById("feed");
-feed.innerHTML=list.map(p=>{
-const liked=likes["l"+p.id];
-const count=likes[p.id]??p.likes;
-
-return`
-<div class="card">
-<img src="${p.image}">
-<div class="title">${p.title}</div>
-<div class="excerpt">${p.excerpt}</div>
-<div class="footer">
-<button class="${liked?'liked':''}" onclick="toggle(${p.id})">👍 ${count}</button>
-</div>
-</div>`;
-}).join("");
+async function loadHotNews() {
+  document.getElementById('mobileFeed').innerHTML = '<div class="loading-spinner"><div class="spinner"></div><div>加载中...</div></div>';
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    POSTS = data.articles.map((a,i)=>({
+      id: Date.now()+i,
+      agent: a.source.name,
+      emoji: '📰',
+      title: a.title,
+      excerpt: a.description||'无描述',
+      source: a.source.name,
+      time: new Date(a.publishedAt).toLocaleString(),
+      likes: Math.floor(Math.random()*5000)+500,
+      url: a.url
+    }));
+    renderFeed();
+    updateTicker();
+  } catch(e) {
+    document.getElementById('mobileFeed').innerHTML='<div style="padding:20px">❌ 加载失败</div>';
+  }
 }
 
-function toggle(id){
-likes["l"+id]=!likes["l"+id];
-likes[id]=(likes[id]??POSTS[id].likes)+(likes["l"+id]?1:-1);
-render();
+function renderFeed() {
+  const feed=document.getElementById('mobileFeed');
+  feed.innerHTML=POSTS.map(p=>`
+    <div class="post-card-mobile">
+      <div class="post-header-mobile">
+        <div class="agent-avatar-mobile">${p.emoji}</div>
+        <div class="agent-info-mobile">
+          <div class="agent-name-mobile">${p.agent}</div>
+          <div class="post-meta-mobile">${p.time}</div>
+        </div>
+      </div>
+      <div class="post-body-mobile">
+        <div class="post-title-mobile">${p.title}</div>
+        <div class="post-excerpt-mobile">${p.excerpt}</div>
+        <div class="post-source-mobile">${p.source}</div>
+      </div>
+      <div class="post-footer-mobile">
+        <button class="like-btn-mobile" onclick="toggleLike(${p.id}, this)">👍 <span id="mLikeCount-${p.id}">${p.likes}</span></button>
+        <button class="read-more-mobile" onclick="window.open('${p.url}')">Read →</button>
+      </div>
+    </div>`).join('');
 }
 
-document.getElementById("search").oninput=e=>{
-const q=e.target.value.toLowerCase();
-render(POSTS.filter(p=>p.title.toLowerCase().includes(q)));
-};
+function toggleLike(id, btn) {
+  const liked = !likesMobile[id];
+  likesMobile[id]=liked;
+  const el = document.getElementById('mLikeCount-'+id);
+  let val=parseInt(el.innerText);
+  el.innerText = liked?val+1:val-1;
+}
 
-loadNews();
+function updateTicker() {
+  const ticker=document.getElementById('tickerContent');
+  ticker.innerText = POSTS.slice(0,5).map(p=>"🔥 "+p.title).join(" • ");
+}
+
+// Search
+document.getElementById('mobileSearch').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();
+  if(!q){renderFeed();return;}
+  const filtered=POSTS.filter(p=>p.title.toLowerCase().includes(q)||p.excerpt.toLowerCase().includes(q));
+  document.getElementById('mobileFeed').innerHTML = filtered.length?filtered.map(p=>`<div class="post-card-mobile"><div class="post-body-mobile">🔍 ${p.title}</div></div>`).join(''):'<div class="post-card-mobile">无结果</div>';
+});
+
+loadHotNews();
 </script>
 
 </body>
