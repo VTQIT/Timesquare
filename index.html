@@ -1,33 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Timesquare · 中国热点 · mobile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    body { font-family: 'Source Serif 4', serif; background:#faf7f2; color:#0a0a0f; min-height:100vh; line-height:1.5; }
-    .mobile-header { position:fixed; top:0; left:0; right:0; height:56px; background:#0a0a0f; display:flex; align-items:center; justify-content:space-between; padding:0 12px; border-bottom:2px solid #c8102e; z-index:2000; }
-    .logo-mobile { display:flex; align-items:center; gap:6px; }
-    .logo-icon { width:34px; height:34px; background:#c8102e; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display', serif; font-weight:900; font-size:22px; color:white; transform:scaleX(-1); }
-    .logo-text { font-family:'Playfair Display', serif; font-size:18px; font-weight:900; color:white; letter-spacing:-0.3px; }
-    .logo-text span { color:#c8102e; }
-    .header-actions { display:flex; align-items:center; gap:8px; }
-    .btn-translate-mobile { background:#c8922a; border:none; color:white; padding:5px 10px; border-radius:20px; font-size:11px; font-weight:600; font-family:'Source Serif 4', serif; }
-    .user-avatar-mobile { width:34px; height:34px; background:linear-gradient(135deg,#c8922a,#c8102e); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:14px; }
-    .mobile-container { max-width:600px; margin:56px auto 0; padding:12px; }
-    .post-card-mobile { background:white; border-radius:16px; margin-bottom:16px; border:1px solid #ddd5c5; overflow:hidden; }
-    .post-body-mobile { padding:10px 12px; }
-    .post-title-mobile { font-family:'Playfair Display', serif; font-size:17px; font-weight:700; line-height:1.3; margin-bottom:6px; }
-    .post-excerpt-mobile { font-size:13px; line-height:1.6; color:#333; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-    .loading-spinner { text-align:center; padding:20px; }
-    .spinner { border:3px solid #ddd5c5; border-top:3px solid #c8102e; border-radius:50%; width:30px; height:30px; animation:spin 1s linear infinite; margin:0 auto 10px; }
-    @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Timesquare · 中国热点 · mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* --- Keep all your previous CSS exactly as in your current code --- */
+/* body, mobile-header, chips, post-card, spinner, modal, toast... */
+</style>
 </head>
 <body>
 
+<!-- MOBILE HEADER -->
 <div class="mobile-header">
   <div class="logo-mobile">
     <div class="logo-icon">时</div>
@@ -39,43 +24,260 @@
   </div>
 </div>
 
-<div class="mobile-container" id="mobileFeed">
-  <div class="loading-spinner">
-    <div class="spinner"></div>
-    <div>加载中国热点中...</div>
+<!-- MAIN MOBILE CONTAINER -->
+<div class="mobile-container" id="mobileContainer">
+  <!-- search + CMS trigger -->
+  <div class="search-row">
+    <input type="text" class="search-input-mobile" placeholder="搜索热点新闻..." id="mobileSearch">
+    <button class="cms-icon-button" onclick="openMobileCMS()">✦ 发布</button>
+  </div>
+
+  <!-- language quick switcher -->
+  <div style="display: flex; gap:5px; margin-bottom: 8px; flex-wrap: wrap;" id="langMobileStrip">
+    <button style="background:var(--accent); color:white; border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('en')">English</button>
+    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('zh')">中文</button>
+    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('tl')">Tagalog</button>
+    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('ceb')">Bisaya</button>
+  </div>
+
+  <!-- category chips -->
+  <div class="category-scroll">
+    <div class="chip-mobile active" data-cat="all">全部</div>
+    <div class="chip-mobile" data-cat="technology">🤖 科技</div>
+    <div class="chip-mobile" data-cat="science">🔬 科学</div>
+    <div class="chip-mobile" data-cat="business">💼 商业</div>
+    <div class="chip-mobile" data-cat="sports">🏅 体育</div>
+    <div class="chip-mobile" data-cat="entertainment">🎬 娱乐</div>
+  </div>
+
+  <!-- ticker -->
+  <div class="ticker-compact" id="tickerHotNews">
+    <span class="ticker-label"><span class="live-dot"></span> 热点</span>
+    <div class="ticker-scroll-mobile" id="tickerContent">🔥 加载中国热点...</div>
+  </div>
+
+  <!-- new posts notification -->
+  <div class="new-posts-sticky" id="mobileNewPosts" style="display: none;">
+    <button class="npb-mobile" onclick="refreshMobileFeed()">⬆ 新热点 — 点击刷新</button>
+  </div>
+
+  <!-- feed container -->
+  <div id="mobileFeed">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <div>加载中国热点中...</div>
+    </div>
+  </div>
+
+  <!-- load more -->
+  <div style="text-align:center; margin: 16px 0 20px;">
+    <button onclick="loadMoreMobile()" style="background:white; border:1px solid var(--border); padding:12px 30px; border-radius:40px; font-size:15px;">加载更多 ↓</button>
   </div>
 </div>
 
+<!-- CMS modal -->
+<div class="modal-overlay" id="mobileCmsModal">
+  <div class="modal-mobile">
+    <div class="modal-header-mobile">
+      <span style="font-weight:700;">✦ 发布热点</span>
+      <button onclick="closeMobileCMS()" style="background:transparent; border:none; color:white; font-size:20px;">✕</button>
+    </div>
+    <div class="modal-body-mobile">
+      <label style="font-size:12px; font-weight:700;">标题</label>
+      <input id="mobileTitle" class="search-input-mobile" placeholder="热点标题...">
+      <label style="font-size:12px; font-weight:700;">内容</label>
+      <textarea id="mobileBody" rows="3" style="width:100%; border:1px solid var(--border); border-radius:16px; padding:10px; margin:6px 0;"></textarea>
+      <button onclick="publishMobilePost()" style="background:var(--zh-red); color:white; border:none; width:100%; padding:14px; border-radius:40px; font-weight:700;">🚀 发布</button>
+    </div>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast-mobile" id="mobileToast">
+  <span>✅</span> <span id="toastMsgMobile">已更新</span>
+</div>
+
 <script>
-  async function fetchNews() {
-    const feed = document.getElementById('mobileFeed');
-    feed.innerHTML = `<div class="loading-spinner"><div class="spinner"></div><div>加载中国热点中...</div></div>`;
-    try {
-      const res = await fetch('/api/news'); // your Vercel API
-      const data = await res.json();
+// ------------------ VERCEL API INTEGRATION ------------------
+let POSTS = [];
+let likesMobile = {};
+let filterMobile = 'all';
+let currentLangMobile = 'en';
+const uiLang = { en: {like:'Like'}, zh:{like:'点赞'}, tl:{like:'Gusto'}, ceb:{like:'Ganahan'} };
 
-      if (!data.articles || data.articles.length === 0) {
-        feed.innerHTML = '<div class="post-card-mobile"><div class="post-body-mobile">没有新闻</div></div>';
-        return;
-      }
+// fetch live news from your Vercel API
+async function loadHotNews() {
+  const feed = document.getElementById('mobileFeed');
+  feed.innerHTML = `<div class="loading-spinner"><div class="spinner"></div><div>加载中国热点中...</div></div>`;
+  try {
+    const res = await fetch('/api/news'); // <--- your Vercel API
+    const data = await res.json();
+    POSTS = data.articles.map((a, i) => ({
+      id: Date.now()+i,
+      cat: a.category || 'all',
+      agent: a.source.name || '未知',
+      emoji: '📰',
+      title: a.title,
+      excerpt: a.description || '',
+      source: a.source.name || '未知',
+      time: a.publishedAt ? new Date(a.publishedAt).toLocaleTimeString() : '刚刚',
+      likes: Math.floor(Math.random()*5000)+100,
+      platform: 'newsapi'
+    }));
+    renderMobileFeed();
+    updateTicker();
+    document.getElementById('mobileNewPosts').style.display = 'block';
+  } catch(err) {
+    feed.innerHTML = `<div class="post-card-mobile">❌ 新闻加载失败</div>`;
+    console.error(err);
+  }
+}
 
-      feed.innerHTML = data.articles.map(article => `
-        <div class="post-card-mobile">
-          <div class="post-body-mobile">
-            <div class="post-title-mobile">${article.title}</div>
-            <div class="post-excerpt-mobile">${article.description || ''}</div>
-            <div style="font-size:10px; color:#8a7f72; margin-top:4px;">来源: ${article.source.name || '未知'}</div>
+function renderMobileFeed() {
+  const feed = document.getElementById('mobileFeed');
+  let filtered = filterMobile==='all' ? POSTS : POSTS.filter(p => p.cat===filterMobile);
+  feed.innerHTML = filtered.map(p=>{
+    const liked = likesMobile['liked_'+p.id] || false;
+    const likeCount = likesMobile[p.id] || p.likes;
+    return `
+    <div class="post-card-mobile" data-cat="${p.cat}">
+      <div class="post-header-mobile">
+        <div class="agent-avatar-mobile">${p.emoji}</div>
+        <div class="agent-info-mobile">
+          <div class="agent-name-mobile">${p.agent}</div>
+          <div class="post-meta-mobile">
+            <span>${p.time}</span>
           </div>
         </div>
-      `).join('');
-    } catch (err) {
-      feed.innerHTML = `<div class="post-card-mobile"><div class="post-body-mobile">加载失败: ${err.message}</div></div>`;
-    }
-  }
+      </div>
+      <div class="post-body-mobile">
+        <div class="post-title-mobile">${p.title}</div>
+        <div class="post-excerpt-mobile">${p.excerpt}</div>
+        <div class="post-source-mobile">${p.source}</div>
+      </div>
+      <div class="post-footer-mobile">
+        <button class="like-btn-mobile ${liked?'liked':''}" onclick="toggleLikeMobile(${p.id}, this)">
+          <span class="like-thumb-mobile">👍</span>
+          <span class="like-count-mobile" id="mLikeCount-${p.id}">${likeCount}</span>
+          ${uiLang[currentLangMobile]?.like||'Like'}
+        </button>
+        <button class="share-mobile" onclick="toastMobile('链接已复制')">↗ 分享</button>
+        <button class="read-more-mobile" onclick="toastMobile('打开中...')">阅读 →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-  // Auto-refresh every 5 minutes
-  setInterval(fetchNews, 300000);
-  fetchNews();
+function updateTicker() {
+  const ticker = document.getElementById('tickerContent');
+  ticker.innerText = POSTS.slice(0,5).map(p=>'🔥 '+p.title).join(' · ') || '🔥 中国热点实时更新';
+}
+
+window.toggleLikeMobile = (id, btn)=>{
+  const liked = !likesMobile['liked_'+id];
+  likesMobile['liked_'+id] = liked;
+  const post = POSTS.find(p=>p.id===id);
+  const base = post?post.likes:0;
+  likesMobile[id] = base + (liked?1:0);
+  const countSpan = document.getElementById('mLikeCount-'+id);
+  if(countSpan) countSpan.innerText = likesMobile[id];
+  btn.classList.toggle('liked', liked);
+};
+
+function setMobileLang(lang) {
+  currentLangMobile = lang;
+  renderMobileFeed();
+  toastMobile(`语言: ${lang}`);
+}
+window.setMobileLang = setMobileLang;
+
+document.querySelectorAll('.chip-mobile').forEach(chip=>{
+  chip.addEventListener('click', e=>{
+    document.querySelectorAll('.chip-mobile').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    filterMobile = chip.getAttribute('data-cat');
+    renderMobileFeed();
+  });
+});
+
+document.getElementById('mobileSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase();
+  if(!q) { renderMobileFeed(); return; }
+  const filtered = POSTS.filter(p => p.title.toLowerCase().includes(q) || p.excerpt.toLowerCase().includes(q));
+  const feed = document.getElementById('mobileFeed');
+  if(filtered.length) feed.innerHTML = filtered.map(p=>`<div class="post-card-mobile"><div class="post-body-mobile">🔍 ${p.title}</div></div>`).join('');
+  else feed.innerHTML='<div class="post-card-mobile">无结果</div>';
+});
+
+function toastMobile(msg){
+  const t = document.getElementById('mobileToast');
+  document.getElementById('toastMsgMobile').innerText = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+window.loadMoreMobile = () => {
+  toastMobile('加载更多中国热点');
+  setTimeout(()=>{
+    POSTS.unshift({
+      id: Date.now(),
+      cat:'all',
+      agent:'热点快讯',
+      emoji:'🔥',
+      title:'新加载新闻示例',
+      excerpt:'这是加载更多示例新闻...',
+      source:'Timesquare',
+      time:'刚刚',
+      likes: Math.floor(Math.random()*1000),
+      platform:'newsapi'
+    });
+    renderMobileFeed();
+    updateTicker();
+  },1000);
+};
+
+window.refreshMobileFeed = ()=>{
+  document.getElementById('mobileNewPosts').style.display='none';
+  loadHotNews();
+};
+
+// CMS modal
+window.openMobileCMS = ()=>document.getElementById('mobileCmsModal').classList.add('open');
+window.closeMobileCMS = ()=>document.getElementById('mobileCmsModal').classList.remove('open');
+window.publishMobilePost = ()=>{
+  const title=document.getElementById('mobileTitle').value;
+  if(!title){toastMobile('输入标题'); return;}
+  POSTS.unshift({
+    id: Date.now(),
+    cat:'all',
+    agent:'用户发布',
+    emoji:'👤',
+    title,
+    excerpt:document.getElementById('mobileBody').value || '来自用户的热点分享',
+    source:'Timesquare',
+    time:'刚刚',
+    likes:0,
+    platform:'user'
+  });
+  closeMobileCMS();
+  renderMobileFeed();
+  toastMobile('发布成功！');
+  document.getElementById('mobileNewPosts').style.display='block';
+};
+
+// overlay click to close
+document.getElementById('mobileCmsModal').addEventListener('click', e=>{if(e.target===this) closeMobileCMS();});
+
+// translate toggle
+document.getElementById('translateToggleMobile').addEventListener('click', e=>{
+  e.stopPropagation();
+  const langs=['en','zh','tl','ceb'];
+  const currentIndex=langs.indexOf(currentLangMobile);
+  setMobileLang(langs[(currentIndex+1)%langs.length]);
+});
+
+// init
+loadHotNews();
 </script>
 </body>
 </html>
