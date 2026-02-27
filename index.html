@@ -258,12 +258,6 @@
       position: relative;
       overflow: hidden;
     }
-    .video-thumb-mobile {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
     .video-play-overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -305,20 +299,6 @@
       margin-left: 6px;
     }
 
-    /* translation bar mobile */
-    .translation-mobile {
-      background: #fffbf0;
-      padding: 8px 12px;
-      font-size: 12px;
-      border-left: 3px solid var(--gold);
-      margin: 4px 12px 8px;
-      border-radius: 6px;
-    }
-    .translation-lang-mobile {
-      font-family: 'JetBrains Mono', monospace; font-weight: 700;
-      font-size: 9px; color: var(--gold); text-transform: uppercase;
-    }
-
     /* post footer mobile */
     .post-footer-mobile {
       display: flex; align-items: center;
@@ -334,7 +314,7 @@
       cursor: pointer;
     }
     .like-btn-mobile.liked { color: var(--zh-red); }
-    .like-thumb-mobile { font-size: 18px; transition: transform 0.2s; }
+    .like-thumb-mobile { font-size: 18px; }
     .like-count-mobile { font-weight: 600; min-width: 20px; }
     .share-mobile {
       background: none; border: none; padding: 6px 10px;
@@ -411,17 +391,13 @@
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Language toggle button text */
-    .lang-en .chinese-only { display: none; }
-    .lang-zh .english-only { display: none; }
-
     /* Video player modal */
     .video-player-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: black;
       z-index: 5000;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
     }
@@ -477,122 +453,111 @@
   <!-- search & CMS trigger -->
   <div class="search-row">
     <input type="text" class="search-input-mobile" id="mobileSearch" 
-           placeholder="🔍 Search hot topics..." data-en="🔍 Search hot topics..." data-zh="🔍 搜索热点新闻...">
-    <button class="cms-icon-button" onclick="openMobileCMS()" 
-            data-en="✦ Post" data-zh="✦ 发布">✦ Post</button>
+           placeholder="🔍 Search hot topics...">
+    <button class="cms-icon-button" onclick="openMobileCMS()">✦ Post</button>
   </div>
 
   <!-- language quick switcher -->
   <div style="display: flex; gap:5px; margin-bottom: 8px; flex-wrap: wrap;" id="langMobileStrip">
     <button style="background:var(--accent); color:white; border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('en')">🇬🇧 English</button>
     <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('zh')">🇨🇳 中文</button>
-    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('tl')">🇵🇭 Tagalog</button>
-    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('ceb')">🇵🇭 Bisaya</button>
   </div>
 
   <!-- category chips -->
   <div class="category-scroll" id="categoryScroll">
-    <div class="chip-mobile active" data-cat="all" data-en="All" data-zh="全部">全部</div>
-    <div class="chip-mobile" data-cat="ai" data-en="🤖 AI/Tech" data-zh="🤖 科技">🤖 科技</div>
-    <div class="chip-mobile ai-news" data-cat="ainews" data-en="✨ AI News" data-zh="✨ AI 新闻">✨ AI News</div>
-    <div class="chip-mobile" data-cat="science" data-en="🔬 Science" data-zh="🔬 科学">🔬 科学</div>
-    <div class="chip-mobile" data-cat="local" data-en="📍 Local" data-zh="📍 本地">📍 本地</div>
-    <div class="chip-mobile" data-cat="world" data-en="🌍 World" data-zh="🌍 国际">🌍 国际</div>
-    <div class="chip-mobile" data-cat="hot" data-en="🔥 Trending" data-zh="🔥 热点">🔥 热点</div>
-    <div class="chip-mobile" data-cat="zhihu" data-en="📚 Zhihu" data-zh="📚 知乎">📚 知乎</div>
-    <div class="chip-mobile" data-cat="weibo" data-en="📱 Weibo" data-zh="📱 微博">📱 微博</div>
-    <div class="chip-mobile" data-cat="baidu" data-en="🔍 Baidu" data-zh="🔍 百度">🔍 百度</div>
-    <div class="chip-mobile" data-cat="video" data-en="🎥 Video" data-zh="🎥 视频">🎥 视频</div>
+    <div class="chip-mobile active" data-cat="all">All</div>
+    <div class="chip-mobile" data-cat="ai">🤖 AI/Tech</div>
+    <div class="chip-mobile ai-news" data-cat="ainews">✨ AI News</div>
+    <div class="chip-mobile" data-cat="hot">🔥 Trending</div>
+    <div class="chip-mobile" data-cat="video">🎥 Video</div>
+    <div class="chip-mobile" data-cat="zhihu">📚 Zhihu</div>
+    <div class="chip-mobile" data-cat="weibo">📱 Weibo</div>
   </div>
 
-  <!-- ticker with HotNews update -->
+  <!-- ticker -->
   <div class="ticker-compact" id="tickerHotNews">
-    <span class="ticker-label"><span class="live-dot"></span> <span data-en="HOT" data-zh="热点">热点</span></span>
+    <span class="ticker-label"><span class="live-dot"></span> HOT</span>
     <div class="ticker-scroll-mobile" id="tickerContent">🔥 Loading Chinese trends...</div>
   </div>
 
   <!-- new posts notification -->
   <div class="new-posts-sticky" id="mobileNewPosts" style="display: none;">
-    <button class="npb-mobile" onclick="refreshMobileFeed()" 
-            data-en="⬆ New hot topics — tap to refresh" data-zh="⬆ 新热点 — 点击刷新">⬆ New hot topics — tap to refresh</button>
+    <button class="npb-mobile" onclick="refreshMobileFeed()">⬆ New hot topics — tap to refresh</button>
   </div>
 
   <!-- feed container -->
   <div id="mobileFeed">
     <div class="loading-spinner">
       <div class="spinner"></div>
-      <div data-en="Loading Chinese hot topics..." data-zh="加载中国热点中...">加载中国热点中...</div>
+      <div>Loading Chinese hot topics...</div>
     </div>
   </div>
 
   <!-- load more button -->
   <div style="text-align:center; margin: 16px 0 20px;">
-    <button onclick="loadMoreMobile()" style="background:white; border:1px solid var(--border); padding:12px 30px; border-radius:40px; font-size:15px; cursor:pointer;"
-            data-en="Load more ↓" data-zh="加载更多 ↓">加载更多 ↓</button>
+    <button onclick="loadMoreMobile()" style="background:white; border:1px solid var(--border); padding:12px 30px; border-radius:40px; font-size:15px; cursor:pointer;">Load more ↓</button>
   </div>
 
   <!-- mobile stats -->
   <div class="mobile-stats-grid">
-    <div class="stat-card"><span class="stat-val" id="hotCount">🔥 0</span><div class="stat-key" data-en="Today's Hot" data-zh="今日热点">今日热点</div></div>
-    <div class="stat-card"><span class="stat-val" id="zhSourceCount">📚 0</span><div class="stat-key" data-en="Zhihu Hot" data-zh="知乎热榜">知乎热榜</div></div>
-    <div class="stat-card"><span class="stat-val" id="weiboCount">📱 0</span><div class="stat-key" data-en="Weibo Trends" data-zh="微博热搜">微博热搜</div></div>
+    <div class="stat-card"><span class="stat-val" id="hotCount">🔥 0</span><div class="stat-key">Today's Hot</div></div>
+    <div class="stat-card"><span class="stat-val" id="zhSourceCount">📚 0</span><div class="stat-key">Zhihu Hot</div></div>
+    <div class="stat-card"><span class="stat-val" id="weiboCount">📱 0</span><div class="stat-key">Weibo Trends</div></div>
   </div>
 
   <!-- cache mini -->
   <div class="cache-mini">
     <div style="display:flex; justify-content:space-between; font-size:11px;">
-      <span data-en="Cache 237 GB / 1 TB" data-zh="缓存 237 GB / 1 TB">缓存 237 GB / 1 TB</span>
+      <span>Cache 237 GB / 1 TB</span>
       <span>23%</span>
     </div>
     <div class="cache-bar"><div class="cache-fill" style="width:23%"></div></div>
     <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:10px; color:var(--muted);">
       <span id="articleCount">48K 文章</span> 
-      <span data-en="🇨🇳 Real-time China trends" data-zh="🇨🇳 中国热点实时更新">🇨🇳 中国热点实时更新</span>
+      <span>🇨🇳 Real-time China trends</span>
     </div>
   </div>
 
-  <div class="footer-note" data-en="Timesquare · truthful · unifying · trending" data-zh="Timesquare · 真实 · 团结 · 热点">Timesquare · 真实 · 团结 · 热点</div>
+  <div class="footer-note">Timesquare · truthful · unifying · trending</div>
 </div>
 
-<!-- SIMPLE CMS MODAL -->
+<!-- CMS MODAL -->
 <div class="modal-overlay" id="mobileCmsModal">
   <div class="modal-mobile">
     <div class="modal-header-mobile">
-      <span style="font-weight:700;" data-en="✦ Post Hot Topic" data-zh="✦ 发布热点">✦ 发布热点</span>
+      <span style="font-weight:700;">✦ Post Hot Topic</span>
       <button onclick="closeMobileCMS()" style="background:transparent; border:none; color:white; font-size:20px; cursor:pointer;">✕</button>
     </div>
     <div class="modal-body-mobile">
-      <label style="font-size:12px; font-weight:700;" data-en="Headline" data-zh="标题">标题</label>
+      <label style="font-size:12px; font-weight:700;">Headline</label>
       <input id="mobileTitle" class="search-input-mobile" style="width:100%; margin: 6px 0 12px;" 
-             placeholder="Enter hot topic..." data-en="Enter hot topic..." data-zh="热点标题...">
+             placeholder="Enter hot topic...">
       
-      <label style="font-size:12px; font-weight:700;" data-en="Category" data-zh="分类">分类</label>
+      <label style="font-size:12px; font-weight:700;">Category</label>
       <select id="mobileCategory" class="search-input-mobile" style="width:100%; margin:6px 0 12px;">
-        <option data-en="Tech" data-zh="科技热点">科技热点</option>
-        <option data-en="Weibo" data-zh="微博热搜">微博热搜</option>
-        <option data-en="Zhihu" data-zh="知乎热议">知乎热议</option>
-        <option data-en="Baidu" data-zh="百度热搜">百度热搜</option>
-        <option data-en="Video" data-zh="视频">视频</option>
-        <option data-en="AI News" data-zh="AI 新闻">AI 新闻</option>
+        <option>Tech</option>
+        <option>Weibo</option>
+        <option>Zhihu</option>
+        <option>Video</option>
+        <option>AI News</option>
       </select>
       
-      <label style="font-size:12px; font-weight:700;" data-en="Content" data-zh="内容">内容</label>
+      <label style="font-size:12px; font-weight:700;">Content</label>
       <textarea id="mobileBody" rows="3" style="width:100%; border:1px solid var(--border); border-radius:16px; padding:10px; margin:6px 0;"></textarea>
       
-      <label style="font-size:12px; font-weight:700;" data-en="Video URL (GitHub RAW)" data-zh="视频链接 (GitHub RAW)">Video URL (GitHub RAW)</label>
+      <label style="font-size:12px; font-weight:700;">Video URL (GitHub RAW)</label>
       <input id="mobileVideoUrl" class="search-input-mobile" style="width:100%; margin:6px 0 12px;" 
              placeholder="https://raw.githubusercontent.com/.../video.mp4">
       
-      <button onclick="publishMobilePost()" style="background:var(--zh-red); color:white; border:none; width:100%; padding:14px; border-radius:40px; font-weight:700; cursor:pointer;"
-              data-en="🚀 Publish" data-zh="🚀 发布">🚀 发布</button>
+      <button onclick="publishMobilePost()" style="background:var(--zh-red); color:white; border:none; width:100%; padding:14px; border-radius:40px; font-weight:700; cursor:pointer;">🚀 Publish</button>
     </div>
   </div>
 </div>
 
 <!-- VIDEO PLAYER MODAL -->
-<div class="video-player-modal" id="videoPlayerModal" style="display: none;" onclick="closeVideoPlayer()">
-  <button class="close-video-btn" onclick="closeVideoPlayer(event)">✕</button>
-  <video id="videoPlayer" controls autoplay></video>
+<div class="video-player-modal" id="videoPlayerModal">
+  <button class="close-video-btn" onclick="closeVideoPlayer()">✕</button>
+  <video id="videoPlayer" controls></video>
 </div>
 
 <!-- TOAST -->
@@ -601,143 +566,94 @@
 </div>
 
 <script>
-  // ---------- VERCEL API INTEGRATION ----------
-  const API_BASE_URL = window.location.origin; // Automatically uses your Vercel URL
-  
-  // Convert data to POSTS format
+  const API_BASE_URL = window.location.origin;
   let POSTS = [];
-  let currentLangMobile = 'en';
-  let likesMobile = {};
-  let filterMobile = 'all';
+  let currentLang = 'en';
+  let likes = {};
+  let currentFilter = 'all';
 
-  // UI translations
-  const uiLang = { 
-    en: { like:'Like' }, 
-    zh: { like:'点赞' }, 
-    tl: { like:'Gusto' }, 
-    ceb: { like:'Ganahan' } 
-  };
-
-  // Initialize - fetch from Vercel API
-  async function loadHotNews() {
-    // Show loading
-    document.getElementById('mobileFeed').innerHTML = `
-      <div class="loading-spinner">
-        <div class="spinner"></div>
-        <div>Loading from Vercel API...</div>
-      </div>
-    `;
-
+  async function loadNews() {
     try {
-      // Fetch from our Vercel API endpoint
       const response = await fetch(`${API_BASE_URL}/api/news`);
       const data = await response.json();
       
       if (data.success && data.posts) {
         POSTS = data.posts;
-        document.getElementById('apiStatus').innerHTML = '<span class="live-dot"></span> Vercel API Live';
+        document.getElementById('apiStatus').innerHTML = '<span class="live-dot"></span> API Live';
       } else {
-        // Fallback to local data if API fails
         loadLocalData();
       }
       
-      // Update UI
-      updateTicker();
-      updateStats();
-      renderMobileFeed();
+      updateAll();
       document.getElementById('mobileNewPosts').style.display = 'block';
-      
     } catch (error) {
-      console.log('API Error, loading local data:', error);
-      document.getElementById('apiStatus').innerHTML = '<span style="color:#ff4444;">●</span> Using Local Data';
+      console.log('API Error:', error);
+      document.getElementById('apiStatus').innerHTML = '<span style="color:#ff4444;">●</span> Local Mode';
       loadLocalData();
     }
   }
 
   function loadLocalData() {
     POSTS = [
-      // Zhihu hot topics
-      { id: 1, cat: 'zhihu', agent: 'Zhihu Hot', agent_zh: '知乎热榜', emoji: '📚', 
+      { id: 1, cat: 'zhihu', agent: 'Zhihu Hot', emoji: '📚', 
         title_en: 'How to view the breakthrough of domestic AI model DeepSeek?', 
         title_zh: '如何看待国产AI大模型DeepSeek的突破？',
         excerpt_en: '12.5M views · From Zhihu trending discussions',
         excerpt_zh: '12.5M views · 来自知乎热议话题',
-        source_en: 'Zhihu Hot', source_zh: '知乎热榜', time: 'Just now', likes: 12500,
-        category_en: 'Tech', category_zh: '科技', heat: '12.5M views', platform: 'zhihu' },
+        source: 'Zhihu Hot', time: 'Just now', likes: 12500,
+        category: 'Tech', heat: '12.5M views', platform: 'zhihu' },
       
-      // Weibo hot searches
-      { id: 2, cat: 'weibo', agent: 'Weibo Trending', agent_zh: '微博热搜', emoji: '📱',
+      { id: 2, cat: 'weibo', agent: 'Weibo Trending', emoji: '📱',
         title_en: 'Jay Chou new song premieres tomorrow #',
         title_zh: '周杰伦新歌明日首发#',
         excerpt_en: 'Hot #1 · Real-time Weibo trends',
         excerpt_zh: 'Hot #1 · 微博实时热搜',
-        source_en: 'Weibo Trending', source_zh: '微博热搜', time: '5 min ago', likes: 45600,
-        category_en: 'Entertainment', category_zh: '娱乐', heat: 'Hot #1', platform: 'weibo' },
+        source: 'Weibo Trending', time: '5 min ago', likes: 45600,
+        category: 'Entertainment', heat: 'Hot #1', platform: 'weibo' },
       
-      // Baidu hot trends
-      { id: 3, cat: 'baidu', agent: 'Baidu Trends', agent_zh: '百度热搜', emoji: '🔍',
-        title_en: '2026 Gaokao reform latest plans announced',
-        title_zh: '2026年高考改革最新方案',
-        excerpt_en: 'Baidu Hot · Baidu search trends',
-        excerpt_zh: 'Baidu Hot · 百度搜索热点',
-        source_en: 'Baidu Trends', source_zh: '百度热搜', time: '10 min ago', likes: 23400,
-        category_en: 'Education', category_zh: '教育', heat: 'Baidu Hot', platform: 'baidu' },
-      
-      // Video post example
-      { id: 4, cat: 'video', agent: 'Video Share', agent_zh: '视频分享', emoji: '🎥',
+      { id: 3, cat: 'video', agent: 'Video Share', emoji: '🎥',
         title_en: 'China High-Speed Rail Technology Showcase',
         title_zh: '中国高铁技术展示',
-        excerpt_en: 'Click to watch amazing footage of China\'s latest high-speed train',
-        excerpt_zh: '点击观看中国最新高铁震撼画面',
-        source_en: 'Video Share', source_zh: '视频分享', time: '15 min ago', likes: 8900,
-        category_en: 'Technology', category_zh: '科技', heat: 'Viral', platform: 'video',
-        isVideo: true, videoUrl: 'https://raw.githubusercontent.com/media-source/sample/main/highspeed-train.mp4' },
-      
-      // AI News
-      { id: 5, cat: 'ainews', agent: 'AI News', agent_zh: 'AI新闻', emoji: '🤖',
-        title_en: 'DeepSeek AI Model Achieves Breakthrough in Natural Language Processing',
-        title_zh: 'DeepSeek AI模型在自然语言处理领域取得突破',
-        excerpt_en: 'Chinese AI startup DeepSeek releases new model outperforming GPT-4',
-        excerpt_zh: '中国AI初创公司DeepSeek发布新模型，在多個基準測試中超越GPT-4',
-        source_en: 'AI News', source_zh: 'AI新闻', time: '20 min ago', likes: 15600,
-        category_en: 'AI', category_zh: '人工智能', heat: 'AI Hot', platform: 'ainews' }
+        excerpt_en: 'Click to watch amazing footage',
+        excerpt_zh: '点击观看震撼画面',
+        source: 'Video Share', time: '15 min ago', likes: 8900,
+        category: 'Technology', heat: 'Viral', platform: 'video',
+        isVideo: true, videoUrl: 'https://raw.githubusercontent.com/media-source/sample/main/highspeed-train.mp4' }
     ];
-    
+    updateAll();
+  }
+
+  function updateAll() {
     updateTicker();
     updateStats();
-    renderMobileFeed();
-    document.getElementById('mobileNewPosts').style.display = 'block';
+    renderFeed();
   }
 
   function updateTicker() {
     const ticker = document.getElementById('tickerContent');
-    const hotItems = POSTS.slice(0, 5).map(p => `🔥 ${currentLangMobile === 'en' ? p.title_en : p.title_zh}`).join(' · ');
-    ticker.innerText = hotItems || (currentLangMobile === 'en' ? '🔥 Real-time China trends' : '🔥 中国热点实时更新');
+    const items = POSTS.slice(0, 5).map(p => `🔥 ${currentLang === 'en' ? p.title_en : p.title_zh}`).join(' · ');
+    ticker.innerText = items || '🔥 Real-time China trends';
   }
 
   function updateStats() {
     document.getElementById('hotCount').innerText = `🔥 ${POSTS.length}`;
     document.getElementById('zhSourceCount').innerText = `📚 ${POSTS.filter(p => p.platform === 'zhihu').length}`;
     document.getElementById('weiboCount').innerText = `📱 ${POSTS.filter(p => p.platform === 'weibo').length}`;
-    document.getElementById('articleCount').innerText = `${POSTS.length} ${currentLangMobile === 'en' ? 'trends' : '热点'}`;
+    document.getElementById('articleCount').innerText = `${POSTS.length} trends`;
   }
 
-  function renderMobileFeed() {
+  function renderFeed() {
     const feed = document.getElementById('mobileFeed');
-    let filtered = filterMobile === 'all' ? POSTS : POSTS.filter(p => p.cat === filterMobile);
+    let filtered = currentFilter === 'all' ? POSTS : POSTS.filter(p => p.cat === currentFilter);
     if (filtered.length === 0) filtered = POSTS;
 
     feed.innerHTML = filtered.map(p => {
-      const liked = likesMobile['liked_'+p.id] || false;
-      const likeCount = likesMobile[p.id] || p.likes;
+      const liked = likes['liked_'+p.id] || false;
+      const likeCount = likes[p.id] || p.likes;
+      const title = currentLang === 'en' ? p.title_en : p.title_zh;
+      const excerpt = currentLang === 'en' ? p.excerpt_en : p.excerpt_zh;
       
-      const title = currentLangMobile === 'en' ? (p.title_en || p.title_zh) : (p.title_zh || p.title_en);
-      const excerpt = currentLangMobile === 'en' ? (p.excerpt_en || p.excerpt_zh) : (p.excerpt_zh || p.excerpt_en);
-      const source = currentLangMobile === 'en' ? (p.source_en || p.source_zh) : (p.source_zh || p.source_en);
-      const agent = currentLangMobile === 'en' ? (p.agent || p.agent_zh) : (p.agent_zh || p.agent);
-      const category = currentLangMobile === 'en' ? (p.category_en || p.category_zh) : (p.category_zh || p.category_en);
-      
-      const sourceBadge = p.platform ? `<span class="china-badge">${p.platform === 'zhihu' ? '知乎' : p.platform === 'weibo' ? '微博' : p.platform === 'baidu' ? '百度' : p.platform === 'ainews' ? 'AI' : '热点'}</span>` : '';
+      const sourceBadge = p.platform ? `<span class="china-badge">${p.platform}</span>` : '';
       const videoBadge = p.isVideo ? '<span class="video-badge-mobile">VIDEO</span>' : '';
       
       const thumbnail = p.isVideo ? 
@@ -748,19 +664,18 @@
         `<div class="thumb-placeholder-mobile">${p.emoji}</div>`;
       
       return `
-      <div class="post-card-mobile" data-cat="${p.cat}">
+      <div class="post-card-mobile">
         <div class="post-header-mobile">
           <div class="agent-avatar-mobile">${p.emoji}</div>
           <div class="agent-info-mobile">
             <div class="agent-name-mobile">
-              ${agent} <span class="ai-badge-mobile">${currentLangMobile === 'en' ? 'TRENDING' : '热点'}</span>
-              ${videoBadge}
-              ${sourceBadge}
+              ${p.agent} <span class="ai-badge-mobile">TRENDING</span>
+              ${videoBadge} ${sourceBadge}
             </div>
             <div class="post-meta-mobile">
               <span>${p.time}</span> 
-              <span class="cat-tag-mobile">${category || 'Trending'}</span>
-              ${p.heat ? `<span style="color: var(--zh-red);">${p.heat}</span>` : ''}
+              <span class="cat-tag-mobile">${p.category}</span>
+              <span style="color: var(--zh-red);">${p.heat}</span>
             </div>
           </div>
         </div>
@@ -768,44 +683,45 @@
         <div class="post-body-mobile">
           <div class="post-title-mobile">${title}</div>
           <div class="post-excerpt-mobile">${excerpt}</div>
-          <div class="post-source-mobile">
-            ${source} · ${currentLangMobile === 'en' ? 'China Trends' : '中国热点'}
-          </div>
+          <div class="post-source-mobile">${p.source} · China Trends</div>
         </div>
         <div class="post-footer-mobile">
-          <button class="like-btn-mobile ${liked ? 'liked' : ''}" onclick="toggleLikeMobile(${p.id}, this)">
-            <span class="like-thumb-mobile">👍</span><span class="like-count-mobile" id="mLikeCount-${p.id}">${formatMobile(likeCount)}</span><span>${uiLang[currentLangMobile]?.like || 'Like'}</span>
+          <button class="like-btn-mobile ${liked ? 'liked' : ''}" onclick="toggleLike(${p.id}, this)">
+            <span class="like-thumb-mobile">👍</span>
+            <span class="like-count-mobile" id="count-${p.id}">${formatNumber(likeCount)}</span>
+            <span>Like</span>
           </button>
-          <button class="share-mobile" onclick="toastMobile('${currentLangMobile === 'en' ? 'Link copied' : '链接已复制'}')">↗ ${currentLangMobile === 'en' ? 'Share' : '分享'}</button>
-          <button class="read-more-mobile" onclick="${p.isVideo ? `playVideo('${p.videoUrl}')` : `toastMobile('${currentLangMobile === 'en' ? 'Opening...' : '打开中...'}')`}">${p.isVideo ? (currentLangMobile === 'en' ? 'Watch →' : '观看 →') : (currentLangMobile === 'en' ? 'Read →' : '阅读 →')}</button>
+          <button class="share-mobile" onclick="showToast('Link copied')">↗ Share</button>
+          <button class="read-more-mobile" onclick="${p.isVideo ? `playVideo('${p.videoUrl}')` : 'showToast(\'Opening...\')'}">
+            ${p.isVideo ? 'Watch →' : 'Read →'}
+          </button>
         </div>
       </div>`}).join('');
   }
 
-  function formatMobile(n) { return n >= 1000 ? (n/1000).toFixed(1)+'K' : n; }
+  function formatNumber(n) {
+    return n >= 1000 ? (n/1000).toFixed(1) + 'K' : n;
+  }
 
-  window.toggleLikeMobile = (id, btn) => {
-    const liked = !likesMobile['liked_'+id];
-    likesMobile['liked_'+id] = liked;
+  window.toggleLike = (id, btn) => {
+    const liked = !likes['liked_'+id];
+    likes['liked_'+id] = liked;
     const post = POSTS.find(p => p.id === id);
     const base = post ? post.likes : 0;
-    likesMobile[id] = base + (liked ? 1 : 0);
-    const countSpan = document.getElementById('mLikeCount-'+id);
-    if (countSpan) countSpan.innerText = formatMobile(likesMobile[id]);
+    likes[id] = base + (liked ? 1 : 0);
+    document.getElementById('count-'+id).innerText = formatNumber(likes[id]);
     btn.classList.toggle('liked', liked);
   };
 
-  // Video player functions
-  window.playVideo = (videoUrl) => {
+  window.playVideo = (url) => {
     const modal = document.getElementById('videoPlayerModal');
     const video = document.getElementById('videoPlayer');
-    video.src = videoUrl;
+    video.src = url;
     modal.style.display = 'flex';
     video.play();
   };
 
-  window.closeVideoPlayer = (event) => {
-    if (event) event.stopPropagation();
+  window.closeVideoPlayer = () => {
     const modal = document.getElementById('videoPlayerModal');
     const video = document.getElementById('videoPlayer');
     video.pause();
@@ -813,186 +729,119 @@
     modal.style.display = 'none';
   };
 
-  function setMobileLang(lang) {
-    currentLangMobile = lang;
-    
+  function showToast(msg) {
+    const toast = document.getElementById('mobileToast');
+    document.getElementById('toastMsgMobile').innerText = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+  window.showToast = showToast;
+
+  window.setMobileLang = (lang) => {
+    currentLang = lang;
     document.querySelectorAll('#langMobileStrip button').forEach(b => {
       b.style.background = 'var(--tag-bg)';
     });
-    if (event && event.target) {
-      event.target.style.background = 'var(--accent)';
-    }
-    
-    document.querySelectorAll('[data-en][data-zh]').forEach(el => {
-      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        el.placeholder = el.getAttribute(`data-${lang}`) || el.placeholder;
-      } else if (el.tagName === 'OPTION') {
-        el.innerText = el.getAttribute(`data-${lang}`) || el.innerText;
-      } else {
-        el.innerText = el.getAttribute(`data-${lang}`) || el.innerText;
-      }
-    });
-    
-    document.querySelectorAll('.chip-mobile').forEach(chip => {
-      chip.innerText = chip.getAttribute(`data-${lang}`) || chip.innerText;
-    });
-    
-    const searchInput = document.getElementById('mobileSearch');
-    if (searchInput) {
-      searchInput.placeholder = lang === 'en' ? '🔍 Search hot topics...' : '🔍 搜索热点新闻...';
-    }
-    
-    updateTicker();
-    updateStats();
-    renderMobileFeed();
-    toastMobile(lang === 'en' ? 'Language: English' : '语言: 中文');
-  }
-  window.setMobileLang = setMobileLang;
+    event.target.style.background = 'var(--accent)';
+    updateAll();
+    showToast(lang === 'en' ? 'Language: English' : '语言: 中文');
+  };
 
-  // category chips
   document.querySelectorAll('.chip-mobile').forEach(chip => {
-    chip.addEventListener('click', e => {
+    chip.addEventListener('click', () => {
       document.querySelectorAll('.chip-mobile').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
-      filterMobile = chip.getAttribute('data-cat');
-      renderMobileFeed();
+      currentFilter = chip.dataset.cat;
+      renderFeed();
     });
   });
 
-  // search
-  document.getElementById('mobileSearch').addEventListener('input', e => {
+  document.getElementById('mobileSearch').addEventListener('input', (e) => {
     const q = e.target.value.toLowerCase();
-    if (!q) { renderMobileFeed(); return; }
+    if (!q) { renderFeed(); return; }
     const filtered = POSTS.filter(p => {
-      const title = currentLangMobile === 'en' ? (p.title_en || '').toLowerCase() : (p.title_zh || '').toLowerCase();
-      const excerpt = currentLangMobile === 'en' ? (p.excerpt_en || '').toLowerCase() : (p.excerpt_zh || '').toLowerCase();
-      return title.includes(q) || excerpt.includes(q);
+      const title = (currentLang === 'en' ? p.title_en : p.title_zh).toLowerCase();
+      return title.includes(q);
     });
     
-    const feed = document.getElementById('mobileFeed');
-    if (filtered.length) {
-      feed.innerHTML = filtered.map(p => {
-        const title = currentLangMobile === 'en' ? (p.title_en || p.title_zh) : (p.title_zh || p.title_en);
-        return `<div class="post-card-mobile"><div class="post-body-mobile">🔍 ${title}</div></div>`;
-      }).join('');
-    } else {
-      feed.innerHTML = `<div class="post-card-mobile"><div class="post-body-mobile">${currentLangMobile === 'en' ? 'No results' : '无结果'}</div></div>`;
-    }
+    document.getElementById('mobileFeed').innerHTML = filtered.length ? 
+      filtered.map(p => `<div class="post-card-mobile"><div class="post-body-mobile">🔍 ${currentLang === 'en' ? p.title_en : p.title_zh}</div></div>`).join('') :
+      `<div class="post-card-mobile"><div class="post-body-mobile">No results</div></div>`;
   });
 
-  function toastMobile(msg) {
-    const t = document.getElementById('mobileToast');
-    document.getElementById('toastMsgMobile').innerText = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
-  }
-  window.toastMobile = toastMobile;
-
   window.loadMoreMobile = () => {
-    toastMobile(currentLangMobile === 'en' ? 'Loading more China trends' : '加载更多中国热点');
+    showToast('Loading more...');
     setTimeout(() => {
       const newPost = {
         id: Date.now(),
         cat: 'hot',
         agent: 'Trending Flash',
-        agent_zh: '热点快讯',
         emoji: '🔥',
-        title_en: 'China Spring Festival travel data hits new record',
-        title_zh: '中国春节旅游数据创新高',
-        excerpt_en: '420 million domestic tourist trips during holiday, up 25% year-on-year',
-        excerpt_zh: '假期国内旅游出游4.2亿人次，同比增长25%',
-        source_en: 'Ministry of Culture',
-        source_zh: '文旅部',
-        time: currentLangMobile === 'en' ? 'Just now' : '刚刚',
+        title_en: 'China Spring Festival travel hits new record',
+        title_zh: '中国春节旅游创新高',
+        excerpt_en: '420 million domestic tourist trips',
+        excerpt_zh: '假期国内旅游出游4.2亿人次',
+        source: 'Ministry of Culture',
+        time: 'Just now',
         likes: 56789,
-        category_en: 'Tourism',
-        category_zh: '旅游',
-        heat: currentLangMobile === 'en' ? 'Hot #1' : '热点第1'
+        category: 'Tourism',
+        heat: 'Hot #1'
       };
       POSTS.unshift(newPost);
-      updateTicker();
-      updateStats();
-      renderMobileFeed();
-      toastMobile(currentLangMobile === 'en' ? 'New trends loaded' : '新热点已加载');
+      updateAll();
+      showToast('New trends loaded');
     }, 1000);
   };
-  
+
   window.refreshMobileFeed = () => {
     document.getElementById('mobileNewPosts').style.display = 'none';
-    loadHotNews();
+    loadNews();
   };
 
-  // CMS modal
   window.openMobileCMS = () => document.getElementById('mobileCmsModal').classList.add('open');
   window.closeMobileCMS = () => document.getElementById('mobileCmsModal').classList.remove('open');
-  
-  window.publishMobilePost = async () => {
+
+  window.publishMobilePost = () => {
     const title = document.getElementById('mobileTitle').value;
-    const videoUrl = document.getElementById('mobileVideoUrl').value;
+    if (!title) { showToast('Enter headline'); return; }
     
-    if (!title) { 
-      toastMobile(currentLangMobile === 'en' ? 'Enter headline' : '输入标题'); 
-      return; 
-    }
-    
-    const category = document.getElementById('mobileCategory').value;
-    const isVideo = category === 'Video' && videoUrl;
-    
-    const newPost = { 
-      id: Date.now(), 
-      cat: isVideo ? 'video' : 'hot', 
-      agent: isVideo ? 'Video Upload' : 'User Post',
-      agent_zh: isVideo ? '视频上传' : '用户发布',
-      emoji: isVideo ? '🎥' : '👤', 
+    const newPost = {
+      id: Date.now(),
+      cat: 'hot',
+      agent: 'User Post',
+      emoji: '👤',
       title_en: title,
       title_zh: title,
-      excerpt_en: isVideo ? 'Click to watch video' : 'Shared by user',
-      excerpt_zh: isVideo ? '点击观看视频' : '来自用户的热点分享',
-      source_en: isVideo ? 'Video Share' : 'Timesquare',
-      source_zh: isVideo ? '视频分享' : 'Timesquare',
-      time: currentLangMobile === 'en' ? 'Just now' : '刚刚',
-      likes: 0, 
-      category_en: isVideo ? 'Video' : 'Trending',
-      category_zh: isVideo ? '视频' : '热点',
-      heat: currentLangMobile === 'en' ? 'New' : '最新',
-      isVideo: isVideo,
-      videoUrl: videoUrl || null
+      excerpt_en: 'Shared by user',
+      excerpt_zh: '用户分享',
+      source: 'Timesquare',
+      time: 'Just now',
+      likes: 0,
+      category: 'Trending',
+      heat: 'New'
     };
     
     POSTS.unshift(newPost);
     closeMobileCMS();
-    updateStats();
-    renderMobileFeed();
-    toastMobile(currentLangMobile === 'en' ? 'Published!' : '发布成功！');
+    updateAll();
+    showToast('Published!');
     document.getElementById('mobileNewPosts').style.display = 'block';
-    
     document.getElementById('mobileTitle').value = '';
-    document.getElementById('mobileVideoUrl').value = '';
   };
 
-  document.getElementById('mobileCmsModal').addEventListener('click', function(e) {
-    if (e.target === this) closeMobileCMS();
+  document.getElementById('mobileCmsModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeMobileCMS();
   });
 
-  document.getElementById('translateToggleMobile').addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (currentLangMobile === 'en') {
-      setMobileLang('zh');
-    } else {
-      setMobileLang('en');
-    }
+  document.getElementById('translateToggleMobile').addEventListener('click', () => {
+    setMobileLang(currentLang === 'en' ? 'zh' : 'en');
   });
 
+  // Initialize
+  loadNews();
   setInterval(() => {
     document.getElementById('mobileNewPosts').style.display = 'block';
   }, 300000);
-
-  // Initialize
-  loadHotNews();
-  
-  setTimeout(() => {
-    setMobileLang('en');
-  }, 100);
 </script>
 </body>
 </html>
