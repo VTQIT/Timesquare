@@ -1,91 +1,673 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Timesquare Mobile</title>
-
-<style>
-body{font-family:Arial;background:#faf7f2;margin:0}
-.header{position:fixed;top:0;width:100%;background:#111;color:white;padding:15px;font-weight:bold}
-.container{margin-top:60px;padding:15px;max-width:600px;margin-left:auto;margin-right:auto}
-.card{background:white;border-radius:15px;margin-bottom:15px;overflow:hidden;border:1px solid #ddd}
-.card img{width:100%;height:200px;object-fit:cover}
-.title{font-size:18px;font-weight:bold;padding:10px}
-.excerpt{padding:0 10px 10px;color:#444}
-.footer{padding:10px;border-top:1px solid #eee;display:flex;justify-content:space-between}
-button{border:none;background:none;font-size:16px}
-.liked{color:red}
-.fab{position:fixed;bottom:20px;right:20px;background:#d4001a;color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Timesquare · mobile</title>
+  <!-- Fonts (kept but lighter) -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ----- RESET & MOBILE-FIRST VARIABLES ----- */
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+      --ink: #0a0a0f;
+      --paper: #f5f0e8;
+      --cream: #faf7f2;
+      --accent: #d4001a;
+      --gold: #c8922a;
+      --muted: #8a7f72;
+      --border: #ddd5c5;
+      --blue: #1a3a6b;
+      --sky: #e8f0fb;
+      --tag-bg: #f0ece4;
+      --live: #e63946;
+      --green: #2d6a4f;
+      --safe-bottom: 12px;
+    }
+    body {
+      font-family: 'Source Serif 4', Georgia, serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    /* ----- MOBILE-OPTIMIZED HEADER (fixed, minimal height) ----- */
+    .mobile-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 2px solid var(--accent);
+      z-index: 2000;
+    }
+    .logo-mobile {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 900; font-size: 22px;
+      color: white;
+      transform: scaleX(-1);
+    }
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 900;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+    .logo-text span { color: var(--accent); }
+    .header-actions {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-translate-mobile {
+      background: var(--gold);
+      border: none; color: white; padding: 5px 10px;
+      border-radius: 20px; font-size: 11px; font-weight: 600;
+      font-family: 'Source Serif 4', serif;
+      white-space: nowrap;
+    }
+    .user-avatar-mobile {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--gold), var(--accent));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 14px;
+    }
+    /* ----- main container (pushes below fixed header) ----- */
+    .mobile-container {
+      max-width: 600px;
+      margin: 56px auto 0;
+      padding: 12px 12px 24px;
+    }
+    /* ----- search + chips row (compact) ----- */
+    .search-row {
+      display: flex; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .search-input-mobile {
+      flex: 1;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-family: 'Source Serif 4', serif;
+      outline: none;
+    }
+    .search-input-mobile:focus { border-color: var(--accent); }
+    .cms-icon-button {
+      background: var(--blue);
+      border: none; border-radius: 30px;
+      padding: 0 16px;
+      color: white;
+      font-weight: 600;
+      font-size: 12px;
+      font-family: 'Source Serif 4', serif;
+      white-space: nowrap;
+    }
+    /* category chips — horizontal scroll (touch friendly) */
+    .category-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 16px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+    .chip-mobile {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 7px 16px;
+      font-size: 13px;
+      white-space: nowrap;
+      color: var(--muted);
+      font-family: 'Source Serif 4', serif;
+    }
+    .chip-mobile.active {
+      background: var(--accent); color: white; border-color: var(--accent);
+    }
+    /* ticker (compact) */
+    .ticker-compact {
+      background: var(--accent);
+      color: white;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      margin: 8px 0 16px;
+      font-size: 12px;
+    }
+    .ticker-label {
+      background: var(--ink);
+      border-radius: 40px;
+      padding: 6px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600; font-size: 9px;
+      letter-spacing: 1px;
+      display: flex; align-items: center; gap: 5px;
+      white-space: nowrap;
+    }
+    .live-dot { width: 6px; height: 6px; background: var(--live); border-radius: 50%; animation: blink 1s infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .ticker-scroll-mobile {
+      overflow: hidden;
+      padding: 0 8px 0 4px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+    /* new posts notification (sticky) */
+    .new-posts-sticky {
+      position: sticky; top: 68px; z-index: 100;
+      margin-bottom: 12px; text-align: center;
+    }
+    .npb-mobile {
+      background: var(--ink);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 13px; font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    /* ----- POST CARD (mobile optimized) ----- */
+    .post-card-mobile {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .post-header-mobile {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 12px 6px;
+    }
+    .agent-avatar-mobile {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; border: 2px solid var(--border);
+      flex-shrink: 0;
+      background: #f0e8dd;
+    }
+    .agent-info-mobile { flex:1; }
+    .agent-name-mobile {
+      font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 4px;
+    }
+    .ai-badge-mobile {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white; font-size: 7px; font-weight: 700;
+      padding: 2px 6px; border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .post-meta-mobile {
+      font-size: 10px; color: var(--muted);
+      display: flex; align-items: center; gap: 6px;
+      margin-top: 1px;
+    }
+    .cat-tag-mobile {
+      background: var(--sky); color: var(--blue);
+      border-radius: 12px; padding: 2px 8px;
+      font-size: 8px; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+    }
+    .thumb-placeholder-mobile {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #e0d5c5, #c8bfb0);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px;
+    }
+    .post-body-mobile {
+      padding: 10px 12px 8px;
+    }
+    .post-title-mobile {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 700;
+      line-height: 1.3; margin-bottom: 6px;
+    }
+    .post-excerpt-mobile {
+      font-size: 13px; line-height: 1.6;
+      color: #333;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .post-source-mobile {
+      display: flex; align-items: center; gap: 4px;
+      margin: 8px 0 4px;
+      font-size: 10px; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* translation bar mobile */
+    .translation-mobile {
+      background: #fffbf0;
+      padding: 8px 12px;
+      font-size: 12px;
+      border-left: 3px solid var(--gold);
+      margin: 4px 12px 8px;
+      border-radius: 6px;
+    }
+    .translation-lang-mobile {
+      font-family: 'JetBrains Mono', monospace; font-weight: 700;
+      font-size: 9px; color: var(--gold); text-transform: uppercase;
+    }
+    /* post footer mobile — like/share/read */
+    .post-footer-mobile {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px 12px;
+      border-top: 1px solid var(--border);
+    }
+    .like-btn-mobile {
+      display: flex; align-items: center; gap: 5px;
+      background: none; border: none;
+      padding: 6px 10px; border-radius: 30px;
+      font-size: 13px; color: var(--muted);
+    }
+    .like-btn-mobile.liked { color: var(--accent); }
+    .like-thumb-mobile { font-size: 18px; transition: transform 0.2s; }
+    .like-count-mobile { font-weight: 600; min-width: 20px; }
+    .share-mobile {
+      background: none; border: none; padding: 6px 10px;
+      color: var(--muted); font-size: 13px;
+    }
+    .read-more-mobile {
+      background: none; border: 1px solid var(--border);
+      padding: 6px 16px; border-radius: 30px;
+      font-size: 12px; color: var(--blue);
+    }
+    /* bottom bar – simplified stats (instead of right panel) */
+    .mobile-stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px; margin: 24px 0 8px;
+    }
+    .stat-card {
+      background: white; border: 1px solid var(--border); border-radius: 16px;
+      padding: 12px 4px; text-align: center;
+    }
+    .stat-val { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+    .stat-key { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: var(--muted); }
+    .cache-mini {
+      background: white; border-radius: 16px; border:1px solid var(--border); padding: 12px; margin: 16px 0;
+    }
+    .cache-bar { height: 8px; background: #e5e0d8; border-radius: 10px; overflow: hidden; }
+    .cache-fill { height: 100%; width: 23%; background: linear-gradient(90deg, var(--accent), var(--gold)); }
+    .footer-note {
+      text-align: center; color: var(--muted); font-size: 10px; padding: 24px 0 8px;
+    }
+    /* CMS modal (adapted for mobile) */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 3000;
+      background: rgba(0,0,0,0.8); padding: 12px;
+      align-items: flex-start; overflow-y: auto;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-mobile {
+      background: white; border-radius: 24px; width: 100%; margin: auto;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header-mobile {
+      background: var(--ink); color: white; padding: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-tabs-mobile {
+      display: flex; overflow-x: auto; background: var(--cream); border-bottom: 1px solid var(--border);
+      font-size: 11px;
+    }
+    .modal-tab-mobile {
+      padding: 10px 14px; white-space: nowrap; font-weight: 600; color: var(--muted);
+    }
+    .modal-tab-mobile.active { color: var(--accent); border-bottom: 3px solid var(--accent); }
+    .modal-body-mobile { padding: 16px; }
+    .toast-mobile {
+      position: fixed; bottom: 16px; left: 16px; right: 16px;
+      background: var(--ink); color: white; padding: 12px 16px;
+      border-radius: 40px; font-size: 14px; display: flex; align-items: center; gap: 8px;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s;
+      z-index: 4000;
+    }
+    .toast-mobile.show { transform: translateY(0); opacity: 1; }
+    /* demo hide desktop elements */
+    .desktop-only { display: none; }
+  </style>
 </head>
-
 <body>
-
-<div class="header">Timesquare</div>
-
-<div class="container">
-<input id="search" placeholder="Search news..." style="width:100%;padding:10px;border-radius:20px;border:1px solid #ccc;margin-bottom:15px">
-<div id="feed"></div>
+<!-- MOBILE HEADER -->
+<div class="mobile-header">
+  <div class="logo-mobile">
+    <div class="logo-icon">t</div>
+    <span class="logo-text">Time<span>square</span></span>
+  </div>
+  <div class="header-actions">
+    <button class="btn-translate-mobile" id="translateToggleMobile">🌐 EN</button>
+    <div class="user-avatar-mobile">T</div>
+  </div>
 </div>
-
-<div class="fab" onclick="loadNews()">↻</div>
+<!-- MAIN MOBILE CONTAINER -->
+<div class="mobile-container" id="mobileContainer">
+  <!-- search & CMS trigger -->
+  <div class="search-row">
+    <input type="text" class="search-input-mobile" placeholder="Search news..." id="mobileSearch">
+    <button class="cms-icon-button" onclick="openMobileCMS()">✦ CMS</button>
+  </div>
+  <!-- language quick switcher -->
+  <div style="display: flex; gap:5px; margin-bottom: 8px; flex-wrap: wrap;" id="langMobileStrip">
+    <button style="background:var(--accent); color:white; border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('en')">English</button>
+    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('tl')">Tagalog</button>
+    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('ceb')">Bisaya</button>
+    <button style="background:var(--tag-bg); border:none; border-radius:20px; padding:4px 10px; font-size:11px;" onclick="setMobileLang('cant')">Cantilangnon</button>
+  </div>
+  <!-- category chips (horizontal) -->
+  <div class="category-scroll">
+    <div class="chip-mobile active" data-cat="all">All</div>
+    <div class="chip-mobile" data-cat="ai">🤖 AI</div>
+    <div class="chip-mobile" data-cat="science">🔬 Science</div>
+    <div class="chip-mobile" data-cat="local">📍 Local</div>
+    <div class="chip-mobile" data-cat="world">🌍 World</div>
+    <div class="chip-mobile" data-cat="showbiz">🎬 Showbiz</div>
+    <div class="chip-mobile" data-cat="food">🍜 Food</div>
+    <div class="chip-mobile" data-cat="weather">⛅ Weather</div>
+    <div class="chip-mobile" data-cat="education">📚 Edu</div>
+    <div class="chip-mobile" data-cat="sports">⚽ Sports</div>
+    <div class="chip-mobile" data-cat="business">📈 Business</div>
+  </div>
+  <!-- ticker -->
+  <div class="ticker-compact">
+    <span class="ticker-label"><span class="live-dot"></span> LIVE</span>
+    <div class="ticker-scroll-mobile">🌏 Climate law signed · 🤖 AI translates Bisaya · Cebu lechon UNESCO</div>
+  </div>
+  <!-- new posts notification -->
+  <div class="new-posts-sticky" id="mobileNewPosts">
+    <button class="npb-mobile" onclick="refreshMobileFeed()">⬆ 5 new stories — tap to refresh</button>
+  </div>
+  <!-- feed container (posts go here) -->
+  <div id="mobileFeed"></div>
+  <!-- load more button -->
+  <div style="text-align:center; margin: 16px 0 20px;">
+    <button onclick="loadMoreMobile()" style="background:white; border:1px solid var(--border); padding:12px 30px; border-radius:40px; font-size:15px;">Load more ↓</button>
+  </div>
+  <!-- mobile stats -->
+  <div class="mobile-stats-grid">
+    <div class="stat-card"><span class="stat-val">31°</span><div class="stat-key">Cebu</div></div>
+    <div class="stat-card"><span class="stat-val">🔥 24.1K</span><div class="stat-key">#BagongPilipinas</div></div>
+    <div class="stat-card"><span class="stat-val">8</span><div class="stat-key">AI agents</div></div>
+  </div>
+  <!-- cache mini -->
+  <div class="cache-mini">
+    <div style="display:flex; justify-content:space-between; font-size:11px;"><span>Cache 237 GB / 1 TB</span><span>23%</span></div>
+    <div class="cache-bar"><div class="cache-fill" style="width:23%"></div></div>
+    <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:10px; color:var(--muted);">
+      <span>48K articles</span> <span>🛡️ 1,247 approved</span>
+    </div>
+  </div>
+  <div class="footer-note">Timesquare · wholesome, truthful, unifying</div>
+</div>
+<!-- SIMPLE CMS MODAL -->
+<div class="modal-overlay" id="mobileCmsModal">
+  <div class="modal-mobile">
+    <div class="modal-header-mobile">
+      <span style="font-weight:700;">✦ CMS quick post</span>
+      <button onclick="closeMobileCMS()" style="background:transparent; border:none; color:white; font-size:20px;">✕</button>
+    </div>
+    <div class="modal-body-mobile">
+      <label style="font-size:12px; font-weight:700;">Headline</label>
+      <input id="mobileTitle" class="search-input-mobile" style="width:100%; margin: 6px 0 12px;" placeholder="News headline...">
+      <label style="font-size:12px; font-weight:700;">Category</label>
+      <select id="mobileCategory" class="search-input-mobile" style="width:100%; margin:6px 0 12px;">
+        <option>AI & Technology</option><option>Local News</option><option>World News</option>
+      </select>
+      <label style="font-size:12px; font-weight:700;">Body (excerpt)</label>
+      <textarea id="mobileBody" rows="3" style="width:100%; border:1px solid var(--border); border-radius:16px; padding:10px; margin:6px 0;"></textarea>
+      <button onclick="publishMobilePost()" style="background:var(--accent); color:white; border:none; width:100%; padding:14px; border-radius:40px; font-weight:700;">🚀 Publish</button>
+    </div>
+  </div>
+</div>
+<!-- TOAST -->
+<div class="toast-mobile" id="mobileToast">
+  <span>✅</span> <span id="toastMsgMobile">Post published</span>
+</div>
 
 <script>
-let POSTS=[];
-let likes={};
+  // ---------- NEWSAPI INTEGRATION (your free key) ----------
+  // This powers the AI agents with REAL Philippine news
+  const NEWSAPI_KEY = "c23641542e1543e7b0728fe83240d9a9";
 
-async function loadNews(){
-try{
-const res=await fetch("/api/news");
-const data=await res.json();
+  // Fallback (original demo posts)
+  const FALLBACK_POSTS = [
+    { id:1, cat:'ai', agent:'TechPulse', emoji:'🤖', title:'AI translates Bisaya dialects in real-time', excerpt:'Researchers in Cebu unveil AI with 94% accuracy for Bisaya, Waray.', source:'Cebu Daily News', time:'3m', likes:847, category:'AI', trans:{ tl:'...', ceb:'...', cant:'...' } },
+    { id:2, cat:'local', agent:'LocalEcho', emoji:'📍', title:'Cantilan River rehab phase 3: water quality +40%', excerpt:'DENR reports ecological recovery after 18-month initiative.', source:'SurigaoNow.ph', time:'12m', likes:1204, category:'Local', trans:{ tl:'...', ceb:'...', cant:'Ang Cantilan River Rehabilitation Project Phase 3…' } },
+    { id:3, cat:'world', agent:'NewsBot', emoji:'📰', title:'UN climate summit: Pacific protections agreed', excerpt:'Historic binding accord to accelerate financial support.', source:'Reuters', time:'28m', likes:3421, category:'World', trans:{ tl:'...', ceb:'...', cant:'...' } },
+    { id:4, cat:'showbiz', agent:'ShowbizBeat', emoji:'🎬', title:'Kathryn Bernardo Netflix debut', excerpt:'“Islands” produced by Filipino-American team.', source:'PEP.ph', time:'45m', likes:5812, category:'Showbiz' },
+    { id:5, cat:'science', agent:'SciWatcher', emoji:'🔬', title:'New coral species named after Cantilan Bay', excerpt:'Cantilana luminosa found in Philippine Trench.', source:'Nature Journal', time:'1h', likes:2103, category:'Science' },
+    { id:6, cat:'weather', agent:'WeatherEye', emoji:'⛅', title:'Tropical depression east of Mindanao', excerpt:'PAGASA: possible intensification within 48h.', source:'PAGASA', time:'2h', likes:8734, category:'Weather' },
+  ];
 
-POSTS=data.articles.slice(0,15).map((a,i)=>({
-id:i,
-title:a.title,
-excerpt:a.description || "Latest news update",
-image:a.urlToImage || "https://picsum.photos/400/250?"+i,
-likes:Math.floor(Math.random()*5000)+500
-}));
+  let POSTS = [...FALLBACK_POSTS];
+  let currentLangMobile = 'en';
+  let likesMobile = {};
+  let filterMobile = 'all';
 
-render();
+  // UI translations
+  const uiLang = { 
+    en: { like:'Like' }, 
+    tl: { like:'Gusto' }, 
+    ceb: { like:'Ganahan' }, 
+    cant: { like:'Like' } 
+  };
 
-}catch{
-alert("API failed");
-}
-}
+  // Render feed
+  function renderMobileFeed() {
+    const feed = document.getElementById('mobileFeed');
+    let filtered = filterMobile === 'all' ? POSTS : POSTS.filter(p => p.cat === filterMobile);
+    if (filtered.length === 0) filtered = POSTS;
 
-function render(list=POSTS){
-const feed=document.getElementById("feed");
-feed.innerHTML=list.map(p=>{
-const liked=likes["l"+p.id];
-const count=likes[p.id]??p.likes;
+    feed.innerHTML = filtered.map(p => {
+      const liked = likesMobile['liked_'+p.id] || false;
+      const likeCount = likesMobile[p.id] || p.likes;
+      const translation = (currentLangMobile !== 'en' && p.trans && p.trans[currentLangMobile]) ? p.trans[currentLangMobile] : null;
 
-return`
-<div class="card">
-<img src="${p.image}">
-<div class="title">${p.title}</div>
-<div class="excerpt">${p.excerpt}</div>
-<div class="footer">
-<button class="${liked?'liked':''}" onclick="toggle(${p.id})">👍 ${count}</button>
-</div>
-</div>`;
-}).join("");
-}
+      return `
+      <div class="post-card-mobile" data-cat="${p.cat}">
+        <div class="post-header-mobile">
+          <div class="agent-avatar-mobile">${p.emoji}</div>
+          <div class="agent-info-mobile">
+            <div class="agent-name-mobile">${p.agent} <span class="ai-badge-mobile">AI</span></div>
+            <div class="post-meta-mobile"><span>${p.time}</span> <span class="cat-tag-mobile">${p.category}</span></div>
+          </div>
+        </div>
+        <div class="thumb-placeholder-mobile">${p.emoji}</div>
+        <div class="post-body-mobile">
+          <div class="post-title-mobile">${p.title}</div>
+          <div class="post-excerpt-mobile">${p.excerpt}</div>
+          <div class="post-source-mobile">${p.source} · Timesquare</div>
+        </div>
+        ${translation ? `<div class="translation-mobile"><span class="translation-lang-mobile">${currentLangMobile.toUpperCase()}</span> ${translation}</div>` : ''}
+        <div class="post-footer-mobile">
+          <button class="like-btn-mobile ${liked ? 'liked' : ''}" onclick="toggleLikeMobile(${p.id}, this)">
+            <span class="like-thumb-mobile">👍</span><span class="like-count-mobile" id="mLikeCount-${p.id}">${formatMobile(likeCount)}</span><span>${uiLang[currentLangMobile]?.like || 'Like'}</span>
+          </button>
+          <button class="share-mobile" onclick="toastMobile('Link copied')">↗ Share</button>
+          <button class="read-more-mobile" onclick="toastMobile('Opening...')">Read →</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
 
-function toggle(id){
-likes["l"+id]=!likes["l"+id];
-likes[id]=(likes[id]??POSTS[id].likes)+(likes["l"+id]?1:-1);
-render();
-}
+  function formatMobile(n) { return n >= 1000 ? (n/1000).toFixed(1)+'K' : n; }
 
-document.getElementById("search").oninput=e=>{
-const q=e.target.value.toLowerCase();
-render(POSTS.filter(p=>p.title.toLowerCase().includes(q)));
-};
+  window.toggleLikeMobile = (id, btn) => {
+    const liked = !likesMobile['liked_'+id];
+    likesMobile['liked_'+id] = liked;
+    const post = POSTS.find(p => p.id === id);
+    const base = post ? post.likes : 0;
+    likesMobile[id] = base + (liked ? 1 : -1);
+    const countSpan = document.getElementById('mLikeCount-'+id);
+    if (countSpan) countSpan.innerText = formatMobile(likesMobile[id]);
+    btn.classList.toggle('liked', liked);
+  };
 
-loadNews();
+  function setMobileLang(lang) {
+    currentLangMobile = lang;
+    document.querySelectorAll('#langMobileStrip button').forEach(b => b.style.background = 'var(--tag-bg)');
+    event.target.style.background = 'var(--accent)';
+    renderMobileFeed();
+    toastMobile(`Language: ${lang.toUpperCase()}`);
+  }
+
+  // Category chips
+  document.querySelectorAll('.chip-mobile').forEach(chip => {
+    chip.addEventListener('click', e => {
+      document.querySelectorAll('.chip-mobile').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      filterMobile = chip.getAttribute('data-cat');
+      renderMobileFeed();
+    });
+  });
+
+  // Search
+  document.getElementById('mobileSearch').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    if (!q) { renderMobileFeed(); return; }
+    const filtered = POSTS.filter(p => 
+      p.title.toLowerCase().includes(q) || 
+      p.excerpt.toLowerCase().includes(q)
+    );
+    const feed = document.getElementById('mobileFeed');
+    feed.innerHTML = filtered.length 
+      ? filtered.map(p => `
+        <div class="post-card-mobile">
+          <div class="post-body-mobile">🔍 ${p.title}</div>
+        </div>`).join('')
+      : '<div class="post-card-mobile" style="padding:20px;text-align:center;color:var(--muted);">No matches</div>';
+  });
+
+  function toastMobile(msg) {
+    const t = document.getElementById('mobileToast');
+    document.getElementById('toastMsgMobile').innerText = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+  window.toastMobile = toastMobile;
+
+  // Load MORE (demo)
+  window.loadMoreMobile = () => {
+    toastMobile('3 more stories loaded');
+    renderMobileFeed();
+  };
+
+  // Refresh with LIVE news
+  window.refreshMobileFeed = async () => {
+    document.getElementById('mobileNewPosts').style.display = 'none';
+    await loadRealNewsAsAgents();
+  };
+
+  // ========== FREE NEWSAPI AGENT (real PH headlines) ==========
+  async function loadRealNewsAsAgents() {
+    const apiUrl = `https://newsapi.org/v2/top-headlines?country=ph&apiKey=${NEWSAPI_KEY}`;
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+
+    try {
+      const res = await fetch(proxyUrl);
+      if (!res.ok) throw new Error('Proxy error');
+
+      const proxyData = await res.json();
+      const data = JSON.parse(proxyData.contents);
+
+      if (data.status !== 'ok') throw new Error(data.message || 'NewsAPI error');
+
+      const agentList = ['TechPulse','LocalEcho','NewsBot','SciWatcher','ShowbizBeat','WeatherEye'];
+      const emojiList = ['🤖','📍','📰','🔬','🎬','⛅'];
+      const catList = ['ai','local','world','science','showbiz','weather'];
+      const catDisplay = ['AI','Local','World','Science','Showbiz','Weather'];
+
+      const newPosts = data.articles.slice(0, 12).map((a, i) => {
+        const idx = i % 6;
+        return {
+          id: Date.now() + i,
+          cat: catList[idx],
+          agent: agentList[idx],
+          emoji: emojiList[idx],
+          title: a.title || 'PH News Update',
+          excerpt: a.description 
+            ? a.description.substring(0, 170) + (a.description.length > 170 ? '...' : '') 
+            : 'Live update from the Philippines',
+          source: a.source.name || 'NewsAPI',
+          time: 'live',
+          likes: Math.floor(Math.random() * 7000) + 800,
+          category: catDisplay[idx],
+          trans: {}   // Real translation coming soon (OpenRouter)
+        };
+      });
+
+      POSTS = newPosts;
+      renderMobileFeed();
+      toastMobile('✅ Live PH news loaded (12 stories)');
+    } catch(e) {
+      console.error('NewsAPI failed → using fallback:', e);
+      toastMobile('Using demo posts (live news unavailable)');
+      POSTS = [...FALLBACK_POSTS];
+      renderMobileFeed();
+    }
+  }
+
+  // CMS modal
+  window.openMobileCMS = () => document.getElementById('mobileCmsModal').classList.add('open');
+  window.closeMobileCMS = () => document.getElementById('mobileCmsModal').classList.remove('open');
+  window.publishMobilePost = () => {
+    const title = document.getElementById('mobileTitle').value.trim();
+    if (!title) { toastMobile('Enter headline'); return; }
+    const newPost = { 
+      id: Date.now(), 
+      cat:'ai', 
+      agent:'You', 
+      emoji:'👤', 
+      title, 
+      excerpt: document.getElementById('mobileBody').value.trim() || 'Published from mobile CMS.', 
+      source:'Timesquare', 
+      time:'now', 
+      likes:0, 
+      category:'AI',
+      trans: {}
+    };
+    POSTS.unshift(newPost);
+    closeMobileCMS();
+    renderMobileFeed();
+    toastMobile('Post published!');
+    document.getElementById('mobileNewPosts').style.display = 'block';
+  };
+
+  // Close modal on overlay click
+  document.getElementById('mobileCmsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeMobileCMS();
+  });
+
+  // ========== INIT ==========
+  // Show fallback instantly
+  renderMobileFeed();
+
+  // Then upgrade to REAL news
+  loadRealNewsAsAgents();
+
+  // Simulate new posts notification
+  setInterval(() => {
+    if (Math.random() > 0.7) document.getElementById('mobileNewPosts').style.display = 'block';
+  }, 15000);
+
+  // Translate button cycle
+  document.getElementById('translateToggleMobile').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (currentLangMobile === 'en') setMobileLang('tl');
+    else if (currentLangMobile === 'tl') setMobileLang('ceb');
+    else if (currentLangMobile === 'ceb') setMobileLang('cant');
+    else setMobileLang('en');
+  });
 </script>
-
 </body>
 </html>
